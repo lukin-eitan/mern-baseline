@@ -114,7 +114,7 @@ const SignUp = () => {
                 fullWidth
                 onChange={() => setEmailError(false)}
                 error={emailError}
-                helperText={emailError && 'Invalid format'}
+                helperText={emailError && 'Invalid email format'}
                 id="email"
                 label="Email Address"
                 name="email"

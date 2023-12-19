@@ -20,8 +20,8 @@ const LogIn = () => {
   const connectedUser = useConnectedUser();
   const queryClient = useQueryClient();
   const [failedLogIn, setFailedLogIn] = React.useState(false);
-  const [emailError, setEmailError] = React.useState(false);
-  const [passwordError, setPasswordError] = React.useState(false);
+  const [emailError, setEmailError] = React.useState<string | null>(null);
+  const [passwordError, setPasswordError] = React.useState<string | null>(null);
 
   const handleCloseSnackBar = (
     _: React.SyntheticEvent | Event,
@@ -35,8 +35,8 @@ const LogIn = () => {
 
   const handleFailedLogIn = () => {
     setFailedLogIn(true);
-    setEmailError(true);
-    setPasswordError(true);
+    setEmailError('Possibly invalid email');
+    setPasswordError('Possibly invalid password');
   };
 
   const loginMutation = useMutation({
@@ -58,7 +58,7 @@ const LogIn = () => {
     });
     if (!validFormat) {
       setFailedLogIn(true);
-      setEmailError(true);
+      setEmailError('Invalid email format');
       return;
     }
 
@@ -81,7 +81,11 @@ const LogIn = () => {
           severity="warning"
           sx={{ width: '100%' }}
         >
-          Incorrect Credentials
+          {emailError && passwordError
+            ? 'Invalid Email or Password'
+            : !!emailError
+            ? 'Invalid Email'
+            : null}
         </Alert>
       </Snackbar>
       {connectedUser?.isConnected && <Navigate to="/" />}
@@ -104,9 +108,9 @@ const LogIn = () => {
             <Grid item xs={12}>
               <TextField
                 required
-                onChange={() => setEmailError(false)}
-                error={emailError}
-                helperText={emailError && 'Invalid entry'}
+                onChange={() => setEmailError(null)}
+                error={!!emailError}
+                helperText={emailError && emailError}
                 fullWidth
                 id="email"
                 label="Email Address"
@@ -117,9 +121,9 @@ const LogIn = () => {
             <Grid item xs={12}>
               <TextField
                 required
-                onChange={() => setPasswordError(false)}
-                error={passwordError}
-                helperText={passwordError && 'Invalid entry'}
+                onChange={() => setPasswordError(null)}
+                error={!!passwordError}
+                helperText={passwordError && passwordError}
                 fullWidth
                 name="password"
                 label="Password"
