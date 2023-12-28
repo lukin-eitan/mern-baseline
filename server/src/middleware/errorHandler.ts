@@ -1,55 +1,31 @@
 import { StatusCodes } from 'http-status-codes';
 import { Request, Response, NextFunction } from 'express';
+import { CustomError } from '../errors/customError.js';
+import { makeDGError } from '../errors/makeDGError.js';
+import config from '../config/envConfig.js';
 
 const errorHandler = (
-  err: { message: any; stack: any },
+  err: any,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const statusCode = res.statusCode
-    ? res.statusCode
-    : StatusCodes.INTERNAL_SERVER_ERROR;
-  switch (statusCode) {
-    case StatusCodes.BAD_REQUEST:
-      res.json({
-        title: 'Bad Request',
-        message: err.message,
-        stackTrace: process.env.NODE_ENV === 'production' ? null : err.stack,
-        statusCode: statusCode
-      });
-      break;
-    case StatusCodes.UNAUTHORIZED:
-      res.json({
-        title: 'Unauthorized',
-        message: err.message,
-        stackTrace: process.env.NODE_ENV === 'production' ? null : err.stack,
-        statusCode: statusCode
-      });
-    case StatusCodes.FORBIDDEN:
-      res.json({
-        title: 'Forbidden',
-        message: err.message,
-        stackTrace: process.env.NODE_ENV === 'production' ? null : err.stack,
-        statusCode: statusCode
-      });
-    case StatusCodes.NOT_FOUND:
-      res.json({
-        title: 'Not Found',
-        message: err.message,
-        stackTrace: process.env.NODE_ENV === 'production' ? null : err.stack,
-        statusCode: statusCode
-      });
-    case StatusCodes.INTERNAL_SERVER_ERROR:
-      res.json({
-        title: 'Server Error',
-        message: err.message,
-        stackTrace: process.env.NODE_ENV === 'production' ? null : err.stack,
-        statusCode: statusCode
-      });
-    default:
-      console.log('Some other error', err);
+  let returnErr = makeDGError();
+  returnErr.stack = config.NODE_ENV === 'production' ? null : err.stack;
+
+  if (err instanceof CustomError) {
+    returnErr.name = err.name;
+    returnErr.message = err.message;
+    returnErr.err = err.errorContent;
+    return res.status(err.statusCode).json(returnErr);
   }
+
+  // Unhandled errors
+  returnErr.name = 'Unknown';
+  returnErr.message = 'Something went wrong';
+  returnErr.err = err;
+  console.error(returnErr);
+  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(returnErr);
 };
 
 export default errorHandler;

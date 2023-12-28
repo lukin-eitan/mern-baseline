@@ -1,46 +1,45 @@
 import { StatusCodes } from 'http-status-codes';
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../models/userModel.js';
+import { IUser, User } from '../models/userModel.js';
 import { Error } from 'mongoose';
 import expressAsyncHandler from 'express-async-handler';
 import { RegisterUser } from '../API/user/registerUser.js';
+import 'express-async-errors';
 
 //@desc Register a user
 //@route POST /api/v1/users/register
 //@access Public
-export const register = expressAsyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      console.log('Registering: ', req.body);
-      const { email, password, firstName, lastName, profileImgUrl } =
-        req.body as RegisterUser;
-      const createdOn: Date = new Date();
-      const user = new User({
-        email,
-        firstName,
-        lastName,
-        createdOn,
-        profileImgUrl
-      });
-      const registeredUser = await User.register(user, password);
-      console.log('registered, now logging in...', registeredUser);
-      req.login(registeredUser, (err) => {
-        if (err) return next(err);
-        req.flash('success', 'Welcome!');
-        return res.status(StatusCodes.OK).json(registeredUser);
-      });
-      console.log('Logged in!');
-    } catch (e: unknown) {
-      if (e instanceof Error.ValidationError) {
-        req.flash('error', e.message);
-      } else {
-        console.log(e);
-        req.flash('error', 'Something went wrong!');
-      }
-      res.status(StatusCodes.BAD_REQUEST);
+export const register = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, password, firstName, lastName, profileImgUrl } =
+    req.body as RegisterUser;
+  const createdOn: Date = new Date();
+  const user = new User({
+    email,
+    firstName,
+    lastName,
+    createdOn,
+    profileImgUrl
+  });
+  User.register(user, password, function (err: Error, user: IUser) {
+    if (err) {
+      return next(err);
     }
-  }
-);
+    req.login(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        // TODO
+      }
+      return res.status(StatusCodes.OK).json(user);
+    });
+  });
+  console.log('HERE');
+};
 
 //@desc get all users
 //@route GET /api/v1/users
