@@ -10,16 +10,15 @@ import Container from '@mui/material/Container';
 import { LogInUser } from '../../API/user/loginUser';
 import { Navigate } from 'react-router-dom';
 import { Alert, Link, Snackbar } from '@mui/material';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { checkAuthenticationInvalidator } from '../../utils/apiQueries/authQueries';
-import { loginUserMutationFn } from '../../utils/apiMutations/authMutations';
+import { useQueryClient } from '@tanstack/react-query';
+import { useLoginUserMutation } from '../../utils/apiMutations/authMutations';
 import { useConnectedUser } from '../../hooks/useConnectedUser';
 import { verifyEmail } from '@devmehq/email-validator-js';
 
 const LogIn = () => {
   const connectedUser = useConnectedUser();
   const queryClient = useQueryClient();
-  const [failedLogIn, setFailedLogIn] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState<boolean>(false);
   const [emailError, setEmailError] = React.useState<string | null>(null);
   const [passwordError, setPasswordError] = React.useState<string | null>(null);
 
@@ -30,20 +29,18 @@ const LogIn = () => {
     if (reason === 'clickaway') {
       return;
     }
-    setFailedLogIn(false);
+    setOpenSnackbar(false);
   };
 
-  const handleFailedLogIn = () => {
-    setFailedLogIn(true);
-    setEmailError('Possibly invalid email');
-    setPasswordError('Possibly invalid password');
+  const handleFailedLogIn = (isClientError: boolean) => {
+    if (isClientError) {
+      setOpenSnackbar(true);
+      setEmailError('Possibly invalid email');
+      setPasswordError('Possibly invalid password');
+    }
   };
 
-  const loginMutation = useMutation({
-    mutationFn: loginUserMutationFn,
-    onSuccess: () => checkAuthenticationInvalidator(queryClient),
-    onError: () => handleFailedLogIn()
-  });
+  const loginMutation = useLoginUserMutation(queryClient, handleFailedLogIn);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -57,7 +54,6 @@ const LogIn = () => {
       timeout: 3000
     });
     if (!validFormat) {
-      setFailedLogIn(true);
       setEmailError('Invalid email format');
       return;
     }
@@ -71,8 +67,9 @@ const LogIn = () => {
 
   return (
     <Container component="main" maxWidth="xs">
+      {connectedUser?.isConnected && <Navigate to="/" />}
       <Snackbar
-        open={failedLogIn}
+        open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleCloseSnackBar}
       >
@@ -88,7 +85,6 @@ const LogIn = () => {
             : null}
         </Alert>
       </Snackbar>
-      {connectedUser?.isConnected && <Navigate to="/" />}
       <Box
         sx={{
           marginTop: 8,

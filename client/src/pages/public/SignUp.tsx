@@ -10,11 +10,11 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { RegisterUser } from '../../API/user/registerUser';
 import { Navigate } from 'react-router-dom';
-import { checkAuthenticationInvalidator } from '../../utils/apiQueries/authQueries';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { registerUserMutationFn } from '../../utils/apiMutations/userMutations';
+import { useQueryClient } from '@tanstack/react-query';
+import { useRegisterUserMutation } from '../../utils/apiMutations/userMutations';
 import { useConnectedUser } from '../../hooks/useConnectedUser';
 import { verifyEmail } from '@devmehq/email-validator-js';
+import { DGError } from '../../API/dgError/dgError';
 
 function Copyright(props: any) {
   return (
@@ -36,13 +36,17 @@ function Copyright(props: any) {
 
 const SignUp = () => {
   const connectedUser = useConnectedUser();
+  const [emailError, setEmailError] = React.useState<string | null>(null);
   const queryClient = useQueryClient();
-  const [emailError, setEmailError] = React.useState(false);
 
-  const registerUserMutation = useMutation({
-    mutationFn: registerUserMutationFn,
-    onSuccess: () => checkAuthenticationInvalidator(queryClient)
-  });
+  const handleFailedSignUp = (errData: DGError) => {
+    setEmailError(errData.message);
+  };
+
+  const registerUserMutation = useRegisterUserMutation(
+    queryClient,
+    handleFailedSignUp
+  );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -53,7 +57,7 @@ const SignUp = () => {
       timeout: 3000
     });
     if (!validFormat) {
-      setEmailError(true);
+      setEmailError('Email is invalid');
       return;
     }
     const newUser: RegisterUser = {
@@ -112,9 +116,9 @@ const SignUp = () => {
               <TextField
                 required
                 fullWidth
-                onChange={() => setEmailError(false)}
-                error={emailError}
-                helperText={emailError && 'Invalid email format'}
+                onChange={() => setEmailError(null)}
+                error={!!emailError}
+                helperText={emailError}
                 id="email"
                 label="Email Address"
                 name="email"

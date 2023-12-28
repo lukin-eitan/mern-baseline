@@ -4,7 +4,8 @@ import { ConnectedUser } from '../../API/connectedUser/connectedUser';
 
 const checkAuthenticationQuery = () => ({
   queryKey: ['checkAuthentication'],
-  queryFn: async () => checkAuthentication()
+  queryFn: async () => checkAuthentication(),
+  staleTime: 60000
 });
 
 export const useCheckAuthenticationQuery = (
@@ -13,7 +14,6 @@ export const useCheckAuthenticationQuery = (
   const query = checkAuthenticationQuery();
   return useQuery({
     ...query,
-    staleTime: 60000,
     initialData: initialData
   });
 };
@@ -21,7 +21,7 @@ export const useCheckAuthenticationQuery = (
 export const checkAuthenticationLoader = (queryClient: QueryClient) => {
   return async () => {
     const query = checkAuthenticationQuery();
-    return queryClient.ensureQueryData({ ...query, staleTime: 60000 }); // return data if available or fetch it
+    return queryClient.ensureQueryData({ ...query }); // return data if available or fetch it
   };
 };
 
