@@ -6,8 +6,9 @@ import MongoStore from 'connect-mongo';
 import config from './envConfig.js';
 import flash from 'connect-flash';
 import mongoSanitize from 'express-mongo-sanitize';
+import { logger } from './logging.js';
 
-export default function initPassportAndSessions(app: express.Application) {
+const initPassportAndSessions = (app: express.Application) => {
   app.use(mongoSanitize());
 
   const mongoStore = MongoStore.create({
@@ -43,5 +44,7 @@ export default function initPassportAndSessions(app: express.Application) {
   passport.serializeUser(User.serializeUser() as any);
   passport.deserializeUser(User.deserializeUser());
 
-  console.log('passport and sessions loaded');
-}
+  logger.info('passport and sessions loaded');
+};
+
+export default initPassportAndSessions;

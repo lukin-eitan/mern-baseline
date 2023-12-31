@@ -1,6 +1,7 @@
 import path from 'path';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
+import { logger } from './logging.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,6 +18,7 @@ interface ENV {
   MONGO_CONNECTION_STRING: string | undefined;
   SESSION_SECRET: Array<string> | undefined;
   MONGO_SESSION_STORE_SECRET: string | undefined;
+  LOGTAIL_TOKEN: string | undefined;
 }
 
 interface Config {
@@ -25,6 +27,7 @@ interface Config {
   MONGO_CONNECTION_STRING: string;
   SESSION_SECRET: Array<string>;
   MONGO_SESSION_STORE_SECRET: string;
+  LOGTAIL_TOKEN: string;
 }
 
 // Loading process.env as ENV interface
@@ -35,7 +38,8 @@ const getConfig = (): ENV => {
     PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
     MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING,
     SESSION_SECRET: process.env.SESSION_SECRET?.split(','),
-    MONGO_SESSION_STORE_SECRET: process.env.MONGO_SESSION_STORE_SECRET
+    MONGO_SESSION_STORE_SECRET: process.env.MONGO_SESSION_STORE_SECRET,
+    LOGTAIL_TOKEN: process.env.LOGTAIL_TOKEN
   };
 };
 

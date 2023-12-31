@@ -6,11 +6,14 @@ import initPassportAndSession from './config/passportSession.js';
 import initSecurity from './config/security.js';
 import { router as usersRoutes } from './routes/userRoutes.js';
 import { router as authRoutes } from './routes/authRoutes.js';
+import { logger, initLogs } from './config/logging.js';
 
+logger.info('Bringing up server');
 await connectDB();
 const app: Express = express();
 const port = config.PORT || 8080;
 
+initLogs(app);
 initSecurity(app);
 initPassportAndSession(app);
 app.use(express.json());
@@ -21,4 +24,4 @@ app.use('/api/v1/users', usersRoutes);
 
 app.use(errorHandler);
 
-app.listen(port, () => console.log(`Server started on port ${port}`));
+app.listen(port, () => logger.info(`Server started on port ${port}`));

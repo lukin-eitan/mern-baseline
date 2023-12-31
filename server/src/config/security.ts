@@ -1,6 +1,7 @@
 import express from 'express';
 import helmet from 'helmet';
 import cors, { CorsOptions } from 'cors';
+import { logger } from './logging.js';
 
 export default function initSecurity(app: express.Application) {
   const corsOptions: CorsOptions = {
@@ -11,5 +12,5 @@ export default function initSecurity(app: express.Application) {
   app.use(cors(corsOptions));
 
   app.use(helmet());
-  console.log('security features loaded');
+  logger.info('security features loaded');
 }
