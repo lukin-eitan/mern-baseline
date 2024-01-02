@@ -7,6 +7,7 @@ export default class UserError extends CustomError {
   private readonly _code: number;
   private readonly _name: string;
   private readonly _logging: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly _context: { [key: string]: any };
 
   constructor(params?: {
@@ -14,6 +15,7 @@ export default class UserError extends CustomError {
     name?: string;
     message?: string;
     logging?: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     context?: { [key: string]: any };
   }) {
     const { code, message, name, logging, context } = params || {};

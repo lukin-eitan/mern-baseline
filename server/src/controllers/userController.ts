@@ -45,7 +45,7 @@ export const register = async (
 //@route GET /api/v1/users
 //@access Private
 export const getUsers = expressAsyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const users = await User.find();
     res.status(StatusCodes.OK).json(users);
   }
@@ -55,7 +55,7 @@ export const getUsers = expressAsyncHandler(
 //@route GET /api/v1/users/:id
 //@access Private
 export const getUser = expressAsyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const user = await User.findById(req.params.id);
     res.status(StatusCodes.OK).json(user);
   }
@@ -65,7 +65,7 @@ export const getUser = expressAsyncHandler(
 //@route GET /api/v1/users/me
 //@access Private
 export const getMe = expressAsyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const user = await User.findById(req.user?.id);
     res.status(StatusCodes.OK).json(user);
   }

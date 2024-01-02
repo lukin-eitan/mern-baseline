@@ -5,12 +5,13 @@ import { makeDGError } from '../errors/makeDGError.js';
 import config from '../config/envConfig.js';
 
 const errorHandler = (
-  err: any,
+  err: Error,
   req: Request,
   res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction
 ) => {
-  let returnErr = makeDGError();
+  const returnErr = makeDGError();
   returnErr.stack = config.NODE_ENV === 'production' ? null : err.stack;
 
   if (err instanceof CustomError) {

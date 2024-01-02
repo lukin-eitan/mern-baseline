@@ -1,7 +1,6 @@
 import express from 'express';
 import { checkauth, login, logout } from '../controllers/authController.js';
 import { isLoggedIn } from '../middleware/authenticationMiddleware.js';
-import passport from 'passport';
 import { passportErrorHandler } from '../middleware/passportErrorHandlers.js';
 
 export const router = express.Router();

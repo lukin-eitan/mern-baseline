@@ -41,6 +41,7 @@ const initPassportAndSessions = (app: express.Application) => {
   app.use(passport.session());
 
   passport.use(User.createStrategy());
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   passport.serializeUser(User.serializeUser() as any);
   passport.deserializeUser(User.deserializeUser());
 

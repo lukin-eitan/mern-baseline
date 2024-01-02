@@ -13,7 +13,7 @@ import { authenticationInfoToErrorMapper } from '../utils/passportMappers/authen
 //@access Public
 export const checkauth = expressAsyncHandler(
   async (req: Request, res: Response) => {
-    let connectedUser: ConnectedUser = { isConnected: false };
+    const connectedUser: ConnectedUser = { isConnected: false };
     if (!req.isAuthenticated()) {
       res.status(StatusCodes.OK).json(connectedUser);
       return;
@@ -38,7 +38,8 @@ export const checkauth = expressAsyncHandler(
 export const login = (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate(
     'local',
-    (err: Error, user: Express.User | false, info: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (err: Error, user: Express.User | false | null, info: any) => {
       if (err) {
         return next(err);
       }
@@ -62,7 +63,7 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
 //@desc logout a user
 //@route GET /api/v1/auth/logout
 //@access Private
-export const logout = (req: Request, res: Response, next: NextFunction) => {
+export const logout = (req: Request, res: Response) => {
   req.logout((err) => {
     if (err) {
       throw err;
