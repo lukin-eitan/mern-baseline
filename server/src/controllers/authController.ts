@@ -7,6 +7,7 @@ import { User } from '../API/user/user.js';
 import { usersSchemaToUsersApi } from '../utils/modelsToAPI/user.js';
 import passport from 'passport';
 import { authenticationInfoToErrorMapper } from '../utils/passportMappers/authenticationInfoToError.js';
+import { logger } from '../config/logging.js';
 
 //@desc check-auth a user
 //@route GET /api/v1/auth/check-auth
@@ -15,6 +16,7 @@ export const checkauth = expressAsyncHandler(
   async (req: Request, res: Response) => {
     const connectedUser: ConnectedUser = { isConnected: false };
     if (!req.isAuthenticated()) {
+      logger.debug('User is not authenticated');
       res.status(StatusCodes.OK).json(connectedUser);
       return;
     }
@@ -53,6 +55,7 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
             return next(err);
           }
           const returnUser: User = usersSchemaToUsersApi(user);
+          logger.info('Logged in user.', returnUser);
           return res.status(StatusCodes.OK).json(returnUser);
         });
       }
@@ -64,10 +67,12 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
 //@route GET /api/v1/auth/logout
 //@access Private
 export const logout = (req: Request, res: Response) => {
+  const connectedUser = req.user ? usersSchemaToUsersApi(req.user) : undefined;
   req.logout((err) => {
     if (err) {
       throw err;
     }
+    logger.info('Logged out user.', connectedUser);
     res.clearCookie('sessionId');
     res.status(StatusCodes.OK).send('Logged out!');
   });

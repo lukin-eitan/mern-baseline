@@ -5,6 +5,8 @@ import { Error } from 'mongoose';
 import expressAsyncHandler from 'express-async-handler';
 import { RegisterUser } from '../API/user/registerUser.js';
 import 'express-async-errors';
+import { logger } from '../config/logging.js';
+import { usersSchemaToUsersApi } from '../utils/modelsToAPI/user.js';
 
 //@desc Register a user
 //@route POST /api/v1/users/register
@@ -24,21 +26,22 @@ export const register = async (
     createdOn,
     profileImgUrl
   });
-  User.register(user, password, function (err: Error, user: IUser) {
+  User.register(user, password, function (err: Error, registeredUser: IUser) {
     if (err) {
       return next(err);
     }
-    req.login(user, (err) => {
+    req.login(registeredUser, (err) => {
       if (err) {
         return next(err);
       }
-      if (!user) {
+      if (!registeredUser) {
         // TODO
       }
-      return res.status(StatusCodes.OK).json(user);
+      const connectedUser = usersSchemaToUsersApi(registeredUser);
+      logger.info('Registered and logged in user.', connectedUser);
+      return res.status(StatusCodes.OK).json(connectedUser);
     });
   });
-  console.log('HERE');
 };
 
 //@desc get all users

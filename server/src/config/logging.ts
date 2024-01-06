@@ -11,14 +11,15 @@ const createLogger = () => {
   const logger = winston.createLogger({
     level: config.NODE_ENV === 'production' ? 'info' : 'debug',
     format: combine(errors({ stack: true }), timestamp(), json()),
-    transports: config.LOGTAIL_TOKEN
-      ? [
-          new winston.transports.Console(),
-          new LogtailTransport(new Logtail(config.LOGTAIL_TOKEN))
-        ]
-      : [new winston.transports.Console()]
+    transports:
+      config.NODE_ENV === 'production' && config.LOGTAIL_TOKEN
+        ? [
+            new winston.transports.Console(),
+            new LogtailTransport(new Logtail(config.LOGTAIL_TOKEN))
+          ]
+        : [new winston.transports.Console()]
   });
-
+  logger.info('Logging initialized in ' + config.NODE_ENV + ' environment.');
   return logger;
 };
 
