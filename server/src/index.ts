@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from 'express';
-import connectDB from './config/dbConnection.js';
+import { connectDB } from './config/dbConnection.js';
 import errorHandler from './middleware/errorHandler.js';
 import config from './config/envConfig.js';
 import initPassportAndSession from './config/passportSession.js';

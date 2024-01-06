@@ -48,6 +48,7 @@
     "concurrently": "^8.2.2",
     "eslint": "^8.56.0",
     "husky": "^8.0.3",
+    "mongodb-memory-server": "^9.1.4",
     "nodemon": "^3.0.2",
     "typescript": "^5.3.3"
   }

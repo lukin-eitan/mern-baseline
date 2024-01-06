@@ -12,21 +12,23 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 // as someone could skip these varibales or not setup a .env file at all
 
 interface ENV {
-  NODE_ENV: string | undefined;
-  PORT: number | undefined;
-  MONGO_CONNECTION_STRING: string | undefined;
-  SESSION_SECRET: Array<string> | undefined;
-  MONGO_SESSION_STORE_SECRET: string | undefined;
-  LOGTAIL_TOKEN: string | undefined;
+  NODE_ENV?: string;
+  PORT?: number;
+  MONGO_DB_NAME?: string;
+  MONGO_CONNECTION_STRING?: string;
+  SESSION_SECRET?: Array<string>;
+  MONGO_SESSION_STORE_SECRET?: string;
+  LOGTAIL_TOKEN?: string;
 }
 
 interface Config {
   NODE_ENV: string;
   PORT: number;
-  MONGO_CONNECTION_STRING: string;
+  MONGO_DB_NAME?: string;
+  MONGO_CONNECTION_STRING?: string;
   SESSION_SECRET: Array<string>;
   MONGO_SESSION_STORE_SECRET: string;
-  LOGTAIL_TOKEN: string;
+  LOGTAIL_TOKEN?: string;
 }
 
 // Loading process.env as ENV interface
@@ -35,6 +37,7 @@ const getConfig = (): ENV => {
   return {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
+    MONGO_DB_NAME: process.env.MONGO_DB_NAME,
     MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING,
     SESSION_SECRET: process.env.SESSION_SECRET?.split(','),
     MONGO_SESSION_STORE_SECRET: process.env.MONGO_SESSION_STORE_SECRET,
