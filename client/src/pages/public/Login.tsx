@@ -80,7 +80,7 @@ const LogIn = () => {
         >
           {emailError && passwordError
             ? 'Invalid Email or Password'
-            : !!emailError
+            : emailError
             ? 'Invalid Email'
             : null}
         </Alert>
@@ -140,7 +140,7 @@ const LogIn = () => {
         </Box>
       </Box>
       <Typography variant="body2" color="text.secondary" align="center">
-        Don't have an account yet?{' '}
+        Don&apos;t have an account yet?{' '}
         <Link color="inherit" href="/auth/signup">
           sign up
         </Link>{' '}

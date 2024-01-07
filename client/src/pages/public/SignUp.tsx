@@ -16,16 +16,16 @@ import { useConnectedUser } from '../../hooks/useConnectedUser';
 import { verifyEmail } from '@devmehq/email-validator-js';
 import { DGError } from '../../API/dgError/dgError';
 
-function Copyright(props: any) {
+function Copyright() {
   return (
     <Typography
       variant="body2"
       color="text.secondary"
       align="center"
-      {...props}
+      sx={{ mt: 5 }}
     >
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color="inherit" href="https://google.com/">
         Your Website
       </Link>{' '}
       {new Date().getFullYear()}
@@ -156,7 +156,7 @@ const SignUp = () => {
           </Button>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 5 }} />
+      <Copyright />
     </Container>
   );
 };
