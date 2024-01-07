@@ -1,4 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd server && npm run precommit
+if [[ -z "${PROJECT_ROOT}" ]]; then 
+    $(error PROJECT_ROOT is not set!)
+fi 
+
+cd ${PROJECT_ROOT}/server && npm run precommit
+cd ${PROJECT_ROOT}/client && npm run precommit
