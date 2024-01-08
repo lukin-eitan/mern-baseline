@@ -24,7 +24,7 @@ interface ENV {
 interface Config {
   NODE_ENV: string;
   PORT: number;
-  MONGO_DB_NAME?: string;
+  MONGO_DB_NAME: string;
   MONGO_CONNECTION_STRING?: string;
   SESSION_SECRET: Array<string>;
   MONGO_SESSION_STORE_SECRET: string;
@@ -35,13 +35,14 @@ interface Config {
 
 const getConfig = (): ENV => {
   return {
-    NODE_ENV: process.env.NODE_ENV,
+    NODE_ENV: process.env.NODE_ENV || undefined,
     PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
-    MONGO_DB_NAME: process.env.MONGO_DB_NAME,
-    MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING,
-    SESSION_SECRET: process.env.SESSION_SECRET?.split(','),
-    MONGO_SESSION_STORE_SECRET: process.env.MONGO_SESSION_STORE_SECRET,
-    LOGTAIL_TOKEN: process.env.LOGTAIL_TOKEN
+    MONGO_DB_NAME: process.env.MONGO_DB_NAME || undefined,
+    MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING || undefined,
+    SESSION_SECRET: process.env.SESSION_SECRET?.split(',') || undefined,
+    MONGO_SESSION_STORE_SECRET:
+      process.env.MONGO_SESSION_STORE_SECRET || undefined,
+    LOGTAIL_TOKEN: process.env.LOGTAIL_TOKEN || undefined
   };
 };
 
@@ -52,8 +53,12 @@ const getConfig = (): ENV => {
 // definition.
 
 const getSanitzedConfig = (config: ENV): Config => {
+  const sanitizedConfig = {} as Config;
   for (const [key, value] of Object.entries(config)) {
-    if (value === undefined) {
+    if (
+      value === undefined &&
+      sanitizedConfig[key as keyof Config] !== undefined
+    ) {
       throw new Error(`Missing key ${key} in config.env`);
     }
   }
