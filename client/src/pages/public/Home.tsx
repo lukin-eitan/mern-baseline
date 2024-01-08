@@ -1,6 +1,8 @@
 import { Stack, Typography } from '@mui/material';
 import { useConnectedUser } from '../../hooks/useConnectedUser';
-import mernBaselineLogo from '../../../../images/mern-baseline-logo.jpg';
+
+// Change this image!!!
+import mernBaselineLogo from '../../../../assets/mern-baseline-logo.jpg';
 
 const Home = () => {
   const connectedUser = useConnectedUser();

@@ -10,3 +10,7 @@ install_all:
 
 create_project_dir_tree:
 	mkdir -p $(PROJECT_ROOT)/server/src
+
+generate_env_files:
+	cp $(PROJECT_ROOT)/assets/be-env-template.env $(PROJECT_ROOT)/server/.env && \
+	cp $(PROJECT_ROOT)/assets/fe-env-template.env $(PROJECT_ROOT)/client/.env
