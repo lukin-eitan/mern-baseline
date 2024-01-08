@@ -39,6 +39,7 @@ const connectDBCloud = async () => {
 export const connectLocalDB = async (): Promise<MongoMemoryServer> => {
   const mongoLocalServer = await MongoMemoryServer.create();
   const uri = mongoLocalServer.getUri();
+  config.MONGO_LOCAL_CONNECTION_STRING = uri; // update config
   try {
     const connect = await mongoose.connect(uri, {
       dbName: config.MONGO_DB_NAME

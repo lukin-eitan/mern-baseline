@@ -12,7 +12,8 @@ const initPassportAndSessions = (app: express.Application) => {
   app.use(mongoSanitize());
 
   const mongoStore = MongoStore.create({
-    mongoUrl: config.MONGO_CONNECTION_STRING,
+    mongoUrl:
+      config.MONGO_CONNECTION_STRING || config.MONGO_LOCAL_CONNECTION_STRING,
     crypto: {
       // encrypt session data
       secret: config.MONGO_SESSION_STORE_SECRET

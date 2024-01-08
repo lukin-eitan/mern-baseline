@@ -21,11 +21,20 @@ interface ENV {
   LOGTAIL_TOKEN?: string;
 }
 
+const requiredEnvList = [
+  'NODE_ENV',
+  'PORT',
+  'MONGO_DB_NAME',
+  'SESSION_SECRET',
+  'MONGO_SESSION_STORE_SECRET'
+];
+
 interface Config {
   NODE_ENV: string;
   PORT: number;
   MONGO_DB_NAME: string;
   MONGO_CONNECTION_STRING?: string;
+  MONGO_LOCAL_CONNECTION_STRING?: string; // will only be set by the dbConnection logic in case we are using mongo-memory-server
   SESSION_SECRET: Array<string>;
   MONGO_SESSION_STORE_SECRET: string;
   LOGTAIL_TOKEN?: string;
@@ -53,12 +62,8 @@ const getConfig = (): ENV => {
 // definition.
 
 const getSanitzedConfig = (config: ENV): Config => {
-  const sanitizedConfig = {} as Config;
   for (const [key, value] of Object.entries(config)) {
-    if (
-      value === undefined &&
-      sanitizedConfig[key as keyof Config] !== undefined
-    ) {
+    if (value === undefined && key in requiredEnvList) {
       throw new Error(`Missing key ${key} in config.env`);
     }
   }
