@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Request, Response, NextFunction } from 'express';
 import { CustomError } from '../errors/customError.js';
 import { makeDGError } from '../errors/makeDGError.js';
-import config from '../config/envConfig.js';
+import { config } from '../index.js';
 
 const errorHandler = (
   err: Error,
@@ -12,7 +12,7 @@ const errorHandler = (
   next: NextFunction
 ) => {
   const returnErr = makeDGError();
-  returnErr.stack = config.NODE_ENV === 'production' ? null : err.stack;
+  returnErr.stack = config.nodeEnv === 'production' ? null : err.stack;
 
   if (err instanceof CustomError) {
     returnErr.name = err.name;

@@ -7,7 +7,7 @@ import { User } from '../API/user/user.js';
 import { usersSchemaToUsersApi } from '../utils/modelsToAPI/user.js';
 import passport from 'passport';
 import { authenticationInfoToErrorMapper } from '../utils/passportMappers/authenticationInfoToError.js';
-import { logger } from '../config/logging.js';
+import { logger } from '../index.js';
 
 //@desc check-auth a user
 //@route GET /api/v1/auth/check-auth

@@ -1,7 +1,7 @@
 import UserError from '../errors/userError.js';
 import { StatusCodes } from 'http-status-codes';
-import config from '../config/envConfig.js';
 import { Request, Response, NextFunction } from 'express';
+import { config } from '../index.js';
 
 export const passportErrorHandler = (
   err: Error,
@@ -16,7 +16,8 @@ export const passportErrorHandler = (
 export const makePassportError = (err: Error) => {
   let code: number = StatusCodes.BAD_REQUEST;
   // the name can be indicative of internal errors we do not wish to expose to client in production
-  const name: string = config.NODE_ENV === 'production' ? 'User Error' : err.name;
+  const name: string =
+    config.nodeEnv === 'production' ? 'User Error' : err.name;
   let message: string = '';
   const logging: boolean = true;
   switch (err.name) {

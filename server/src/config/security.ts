@@ -1,11 +1,11 @@
 import express from 'express';
 import helmet from 'helmet';
 import cors, { CorsOptions } from 'cors';
-import { logger } from './logging.js';
+import { logger } from '../index.js';
 
 export default function initSecurity(app: express.Application) {
   const corsOptions: CorsOptions = {
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173'], // vite default port
     credentials: true,
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204,
   };

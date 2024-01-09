@@ -5,8 +5,8 @@ import { Error } from 'mongoose';
 import expressAsyncHandler from 'express-async-handler';
 import { RegisterUser } from '../API/user/registerUser.js';
 import 'express-async-errors';
-import { logger } from '../config/logging.js';
 import { usersSchemaToUsersApi } from '../utils/modelsToAPI/user.js';
+import { logger } from '../index.js';
 
 //@desc Register a user
 //@route POST /api/v1/users/register
