@@ -9,7 +9,7 @@ install_all:
 	cd $(PROJECT_ROOT)/client && npm i && cd $(PROJECT_ROOT)/server && npm i 
 
 install_husky:
-	cd $(PROJECT_ROOT) && npx husky install
+	cd $(PROJECT_ROOT) && npx husky
 
 create_project_dir_tree:
 	mkdir -p $(PROJECT_ROOT)/server/src
